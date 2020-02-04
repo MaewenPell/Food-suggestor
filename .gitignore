@@ -134,4 +134,4 @@ dmypy.json
 *.svg
 *.mwb
 *.json
-conf.py
+environnement.txt

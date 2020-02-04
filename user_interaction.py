@@ -63,6 +63,5 @@ class main_windows():
             Get_informations("plats-prepares")
 
 
-
 if __name__ == "__main__":
     main_windows = main_windows()

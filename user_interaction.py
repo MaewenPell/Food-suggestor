@@ -26,33 +26,38 @@ class main_windows():
         Function used to display the possible
         category choice
         '''
-        print("Please chose a category of product : ")
-        print("1 - Drinks")
-        print("2 - Biscuits and cakes")
-        print("3 - Spreads")
-        print("4 - Frozen food")
-        print("5 - Convenience food")
-        while not self.valid_choice:
-            try:
-                user_choice = int(input(re.sub(' +', ' ', """
-                              Please type the number
-                              of the wanted categorie : """)))
-                if user_choice <= 5 and user_choice > 0:
-                    self.valid_choice = True
-                else:
-                    print("Please choice among the proposed values : ")
-            except ValueError:
-                print("Please choice among the proposed values : ")
-        return user_choice
+        
+        # TODO : Display here the catégories read from the DB
+        # Example : 1 - Boisson
+
+
+        # print("Please chose a category of product : ")
+        # print("1 - Drinks")
+        # print("2 - Biscuits and cakes")
+        # print("3 - Spreads")
+        # print("4 - Frozen food")
+        # print("5 - Convenience food")
+        # while not self.valid_choice:
+        #     try:
+        #         user_choice = int(input(re.sub(' +', ' ', """
+        #                       Please type the number
+        #                       of the wanted categorie : """)))
+        #         if user_choice <= 5 and user_choice > 0:
+        #             self.valid_choice = True
+        #         else:
+        #             print("Please choice among the proposed values : ")
+        #     except ValueError:
+        #         print("Please choice among the proposed values : ")
+        # return user_choice
 
     def related_categories(self, user_choice):
         '''
             Function used to make the correspondance
             between the user choice and the category
         '''
-        # TODO : Link propre avec BDD ici --> ID
         if user_choice == 1:
             Get_informations("boissons")
+            # TODO : Read information from BDD Here
         elif user_choice == 2:
             Get_informations("biscuit-et-gateaux")
         elif user_choice == 3:

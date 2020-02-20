@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`categorie` (
   UNIQUE INDEX `related_category_UNIQUE` (`related_category` ASC) VISIBLE,
   UNIQUE INDEX `id_off_UNIQUE` (`id_off` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 0
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -53,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`db_aliments` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 0
 DEFAULT CHARACTER SET = utf8mb4;
 
 
@@ -79,6 +81,7 @@ CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`substitut` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 0
 DEFAULT CHARACTER SET = utf8mb4;
 
 

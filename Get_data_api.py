@@ -2,21 +2,22 @@ import requests
 import conf
 
 
-class Get_informations():
+class Get_data_api():
     '''
         Class use to fetch data from
         OpenFoodFact and retrieve informations
     '''
     def __init__(self, categorie):
-        self.manage_informations(categorie)
+        self.categorie = categorie
+        self.manage_informations()
 
-    def manage_informations(self, categorie):
+    def manage_informations(self):
         '''
             Routine use to call the api and receive json data
             and trigger the different functions
         '''
         r = requests.get(
-            f"https://fr.openfoodfacts.org/categorie/{categorie}.json")
+            f"https://fr.openfoodfacts.org/categorie/{self.categorie}.json")
         r = r.json()
 
         i = 0
@@ -28,6 +29,12 @@ class Get_informations():
                 store = self.get_store(r, i)
                 link = self.get_link(r, i)
                 nutriscore = self.get_nutriscore(r, i)
+                all_cat = [categories, name,
+                           store, link, nutriscore]
+                for elem in enumerate(all_cat):
+                    if (elem is None or elem == ''):
+                        complete = False
+
 
                 if complete:
                     print(f"""Categories : {categories}
@@ -44,6 +51,8 @@ class Get_informations():
             except KeyError as e:
                 print("The following key is not referenced :\n",
                       e)
+            except IndexError:
+                print("Not enough data")
 
     def get_categories(self, data_to_fetch, current_prod):
         '''
@@ -104,8 +113,3 @@ class Get_informations():
             nutriscore = current_product['nutrition_grades_tags']
 
         return nutriscore
-
-
-# if __name__ == "__main__":
-#     current_search = Get_informations()
-#     response = current_search.manage_informations()

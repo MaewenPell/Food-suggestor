@@ -19,7 +19,6 @@ class Displayer():
             \t 2- Afficher les produits substitués
             \t 3- Réinitialiser la base de donnée
             \t 4- Quitter le programme
-            \t 9- Dev : Remplier cat
             """)
 
     def quit_message(self):

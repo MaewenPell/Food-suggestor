@@ -1,4 +1,4 @@
-from conf import CATEGORIES
+from conf import CATEGORIES, DB
 from connector_db import Db_query
 
 
@@ -16,7 +16,8 @@ class Parsing_params():
         '''
         self.fetched_categories = CATEGORIES
         for cat in sorted(self.fetched_categories):
-            Db_query('fill_categories', cat)
+            # Db_query('fill_categories', cat)
+            Db_query.create_categories(self, DB, cat)
 
 
 if __name__ == "__main__":

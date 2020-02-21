@@ -35,7 +35,6 @@ class Get_data_api():
                     if (elem is None or elem == ''):
                         complete = False
 
-
                 if complete:
                     print(f"""Categories : {categories}
                             -------------------------------

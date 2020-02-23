@@ -32,7 +32,25 @@ class Displayer():
         )
 
     def display_categories(self, categories):
+        ''' Function used to display the categories '''
         for elem in categories:
             id_cat = elem[0]
             nom = elem[1]
             print(f"{id_cat} - {nom}")
+
+    def display_products(self, results):
+        '''
+            Display information from the different categories 
+            depending on the user choice
+        '''
+        for products in results:
+            name = products[2]
+            nutriscore = products[3]
+            store = products[4]
+            link = products[5]
+            print("-------------")
+            print(f"Nom du produit : {name}")
+            print(f"Nutriscore : {nutriscore}")
+            print(f"Magasin : {store}")
+            print(f"Lien : {link}")
+            print("-------------")

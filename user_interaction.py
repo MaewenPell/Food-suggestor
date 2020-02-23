@@ -1,9 +1,9 @@
 from display import Displayer
 from sys import exit
-from connector_db import Db_query
+from db_interraction import Sql_management
 from parsing_params import Parsing_params
 from Get_data_api import Get_data_api
-from conf import DB
+from settings import DB, CATEGORIES
 
 
 class main_windows():
@@ -37,17 +37,27 @@ class main_windows():
             except ValueError:
                 print("Error, please enter only a correct number")
 
+        # -------------------
+        # Display categories
+        # and products
+        # -------------------
+
         if choice_menu == 1:
-            results = Db_query.print_table(self, DB, 'categorie')
+            results = Sql_management.export_table(self, DB, 'categorie')
             Displayer.display_categories(self, results)
-            # TODO : Query BDD avec les items relatif a la catégorie
             while not self.user_choice_checker(choice_category):
                 try:
                     choice_category = int(input("Choisir une catégorie : "))
+                    results = Sql_management.export_products(self, DB,
+                                                             'db_aliments',
+                                                             choice_category)
+                    Displayer.display_products(self, results)
                 except ValueError:
                     print("Error, please enter only a correct number")
-            Get_data_api(choice_category)
 
+        # --------------------------
+        # Display substitue products
+        # --------------------------
         elif choice_menu == 2:
             pass
 
@@ -55,9 +65,15 @@ class main_windows():
         # Reset the BDD
         # --------------
         elif choice_menu == 3:
-            # TODO : loop through each tables
-            Db_query.reset_bdd(self, DB)
-            Parsing_params.prepare_sql_filling(self)
+            # TODO : loop through each tables and categories
+            # 1st : We delete and recreate the BDD
+            Sql_management.reset_bdd(self, DB)
+            # 2nd : We create the categories from config.py
+            Parsing_params.cat_filling(self)
+            # 3rd we loop through the result and adding them into the BDD
+            # TODO : automatize the categories filling
+            for category in CATEGORIES:
+                Get_data_api.manage_products(self, category)
         # --------------
         # Leave the prog
         # --------------

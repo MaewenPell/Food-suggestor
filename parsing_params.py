@@ -1,5 +1,5 @@
-from conf import CATEGORIES, DB
-from connector_db import Db_query
+from settings import CATEGORIES, DB
+from db_interraction import Sql_management
 
 
 class Parsing_params():
@@ -8,16 +8,19 @@ class Parsing_params():
     trigger the BDD filling functions
     '''
 
-    def prepare_sql_filling(self):
+    def cat_filling(self):
         '''
         Fuction used to get the name of the categories
-        and give these informations to Db query to
+        and trigger Sql_management Class to
         fill the bdd
         '''
         self.fetched_categories = CATEGORIES
         for cat in sorted(self.fetched_categories):
-            # Db_query('fill_categories', cat)
-            Db_query.create_categories(self, DB, cat)
+            results = Sql_management.create_categories(self, DB, cat)
+            if not results:
+                print(f"Error filling data into {cat}")
+            else:
+                print(f"Succes filling data into {cat}")
 
 
 if __name__ == "__main__":

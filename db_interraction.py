@@ -24,7 +24,7 @@ class Sql_management():
             return True
         except Exception as e:
             print(f"Error inserting data: {e}")
-            print(f"id = {cat_id}")
+            print(f"{sql}")
             DB.rollback()
 
     def create_categories(self, DB, categorie_to_fill):
@@ -64,9 +64,20 @@ class Sql_management():
             except Exception as e:
                 print(e)
 
+    def sort_product(self, DB, categorie_id):
+        with DB.cursor() as cursor:
+            sql = f"""SELECT * FROM db_aliments WHERE categorie_id={categorie_id}
+                    ORDER BY nutriscore LIMIT 20;
+                    """
+            try:
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+            except Exception as e:
+                print(e)
+
     def reset_bdd(self, DB):
         ''' Function used to delete all tables '''
-        # TODO Loop through each tables
         with DB.cursor() as cursor:
             sql = ''
             with open('db_creation_script.sql', 'r') as sql_file:

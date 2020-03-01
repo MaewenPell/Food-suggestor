@@ -2,21 +2,22 @@ from display import Displayer
 from sys import exit
 from db_interraction import Sql_management
 from parsing_params import Parsing_params
-from Get_data_api import Get_data_api
-from settings import DB, CATEGORIES
+from get_data_api import Get_data_api
+from settings import DB
 
 
 class main_windows():
     def __init__(self):
         self.valid_choice = False
+        self.api_worker = Get_data_api()
         self.main_prog()
+        Displayer.print_welcome(self)
 
     def main_prog(self):
         '''
             Functon used to handle the general
             execution of the program
         '''
-        Displayer.print_welcome(self)
         Displayer.print_menu(self)
         self.choice_parsing()
 
@@ -25,9 +26,11 @@ class main_windows():
         Function used to trigger the correct function
         depending of the user choice
         '''
-        #
+
+        # ---------------------
         # Choice of a categorie
-        #
+        # ---------------------
+
         choice_menu = -1
         choice_category = -1
 
@@ -58,12 +61,21 @@ class main_windows():
         # --------------------------
         # Display substitue products
         # --------------------------
+
         elif choice_menu == 2:
-            pass
+            while not self.user_choice_checker(choice_category):
+                try:
+                    choice_category = int(input("Choisir une catégorie : "))
+                    results = Sql_management.sort_product(self, DB,
+                                                          choice_category)
+                    Displayer.display_products(self, results)
+                except ValueError:
+                    print("Error, please enter only a correct number")
 
         # --------------
         # Reset the BDD
         # --------------
+
         elif choice_menu == 3:
             # TODO : loop through each tables and categories
             # 1st : We delete and recreate the BDD
@@ -71,14 +83,17 @@ class main_windows():
             # 2nd : We create the categories from config.py
             Parsing_params.cat_filling(self)
             # 3rd we loop through the result and adding them into the BDD
-            # TODO : automatize the categories filling
-            for category in CATEGORIES:
-                Get_data_api.manage_products(self, category)
+            categories_sql = Sql_management.export_table(self, DB, 'categorie')
+            self.api_worker.manage_products(categories_sql)
+
         # --------------
         # Leave the prog
         # --------------
+
         elif choice_menu == 4:
             self.quit_prog()
+
+        self.main_prog()
 
     def user_choice_checker(self, choice_to_check):
         ''' Function used to check the input '''

@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`categorie` (
   PRIMARY KEY (`ID`),
   UNIQUE INDEX `related_category_UNIQUE` (`name` ASC) VISIBLE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+-- AUTO_INCREMENT = 2
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
@@ -38,8 +38,8 @@ COLLATE = utf8mb4_0900_ai_ci;
 CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`db_aliments` (
   `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `categorie_id` INT(10) UNSIGNED NOT NULL,
-  `alim_name` VARCHAR(50) NOT NULL,
-  `store` VARCHAR(30) NOT NULL,
+  `alim_name` VARCHAR(255) NOT NULL,
+  `store` VARCHAR(255) NOT NULL,
   `website_link` VARCHAR(255) NOT NULL,
   `nutriscore` TINYTEXT NOT NULL,
   PRIMARY KEY (`ID`),

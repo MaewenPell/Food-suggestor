@@ -1,5 +1,6 @@
-import configuration as cf
 import pymysql
+
+from settings_confs_files import configuration as cf
 
 ''' Database parameters '''
 DB = pymysql.connect(cf.env.get("db", "host"),
@@ -12,7 +13,7 @@ NB_RESULTS = 100
 
 # Path to the script creating the database
 PATH_DB_SCRIPT = """
-/Users/maewen/OpenClassrooms/Projet_5/Food-suggestor/db_creation_scripts.sql
+/Users/maewen/OpenClassrooms/Projet_5/Food-suggestor/database_management/db_creation_script.sql
 """
 
 '''

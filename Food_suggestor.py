@@ -1,9 +1,10 @@
-from display import Displayer
 from sys import exit
-from db_interraction import Sql_management
-from parsing_params import Parsing_params
-from get_data_api import Get_data_api
-from settings import DB
+
+from API_management.get_data_api import Get_data_api
+from API_management.parsing_params import Parsing_params
+from db_management.db_interaction import Sql_management
+from settings_confs_files.settings import DB
+from user_interraction.display import Displayer
 
 
 class main_windows():

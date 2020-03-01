@@ -1,8 +1,9 @@
 import configparser
-
+import os
 
 def main():
-    configFilePath = './environnement.txt'
+    print(os.getcwd())
+    configFilePath = 'settings_confs_files/environnement.txt'
     env.read(configFilePath)
 
 

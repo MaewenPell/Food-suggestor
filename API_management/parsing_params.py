@@ -1,5 +1,5 @@
-from settings import CATEGORIES, DB
-from db_interraction import Sql_management
+from db_management.db_interaction import Sql_management
+from settings_confs_files import settings as st
 
 
 class Parsing_params():
@@ -14,14 +14,10 @@ class Parsing_params():
         and trigger Sql_management Class to
         fill the bdd
         '''
-        self.fetched_categories = CATEGORIES
+        self.fetched_categories = st.CATEGORIES
         for cat in sorted(self.fetched_categories):
-            results = Sql_management.create_categories(self, DB, cat)
+            results = Sql_management.create_categories(self, st.DB, cat)
             if not results:
                 print(f"Error filling data into {cat}")
             else:
                 print(f"Succes filling data into {cat}")
-
-
-if __name__ == "__main__":
-    Parsing_params()

@@ -1,6 +1,8 @@
-
 class Sql_management():
     ''' Class use to retrieve and write data into the DB '''
+
+    def __init__(self):
+        pass
 
     def create_products(self, DB, values, cat_id):
         '''
@@ -80,7 +82,7 @@ class Sql_management():
         ''' Function used to delete all tables '''
         with DB.cursor() as cursor:
             sql = ''
-            with open('db_creation_script.sql', 'r') as sql_file:
+            with open('db_management/db_creation_script.sql', 'r') as sql_file:
                 for line in sql_file:
                     sql += line
                 sql = sql.split(";")

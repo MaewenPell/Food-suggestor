@@ -1,7 +1,7 @@
 import requests
-import settings as st
-from db_interraction import Sql_management
-import re
+
+from db_management.db_interaction import Sql_management
+from settings_confs_files import settings as st
 
 
 class Get_data_api():

@@ -1,5 +1,12 @@
+This file will be used to connect the Food Suggestor program 
+to an existing database you need to renseign these informations
+to get the program working.
+It will be load by the program during the connection process.
+
+>>>> This file must be saved as environnement.txt <<<
+
 [db]
-host = 
-username = 
-password = 
-schema = 
+host = ex: Localhost
+username = ex : User
+password = ex : Sup3r_Pa$$w0rD
+schema = The name of the Schema : main_db_food_suggestor

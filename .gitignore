@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Other
+.vscode/
+*.png
+*.svg
+*.mwb
+*.json
+environnement.txt

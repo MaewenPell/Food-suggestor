@@ -46,11 +46,13 @@ class Displayer():
             depending on the user choice
         '''
         for products in results:
+            id_prod = products[0]
             name = products[2]
             nutriscore = products[5]
             store = products[3]
             link = products[4]
-            print("-------------")
+            print("-----------------------------")
+            print(f"Choix n°{id_prod}")
             print(f"Nom du produit : {name}")
             print(f"Nutriscore : {nutriscore}")
             print(f"Magasin : {store}")

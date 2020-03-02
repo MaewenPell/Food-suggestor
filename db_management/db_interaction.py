@@ -1,8 +1,8 @@
+from settings_confs_files.settings import NB_DISPLAYED, DB
+
+
 class Sql_management():
     ''' Class use to retrieve and write data into the DB '''
-
-    def __init__(self):
-        pass
 
     def create_products(self, DB, values, cat_id):
         '''
@@ -30,6 +30,10 @@ class Sql_management():
             DB.rollback()
 
     def create_categories(self, DB, categorie_to_fill):
+        '''
+            Function used to create the categorie into the DB depends
+            of the categories we fill into settings
+        '''
         cursor = DB.cursor()
 
         sql = f"""INSERT INTO categorie (name)
@@ -45,7 +49,10 @@ class Sql_management():
         # self.db.close()
 
     def export_table(self, DB, table):
-        ''' Function used to display the content of the DB '''
+        '''
+            Function used to export sql results
+            of the content of the DB
+        '''
         with DB.cursor() as cursor:
             sql = f"SELECT * FROM {table}"
             try:
@@ -58,7 +65,8 @@ class Sql_management():
     def export_products(self, DB, table, categorie_id):
         ''' Function used to display the products '''
         with DB.cursor() as cursor:
-            sql = f"SELECT * FROM {table} WHERE categorie_id={categorie_id};"
+            sql = f"""SELECT * FROM {table} WHERE categorie_id={categorie_id}
+                      LIMIT {NB_DISPLAYED};"""
             try:
                 cursor.execute(sql)
                 results = cursor.fetchall()
@@ -66,15 +74,35 @@ class Sql_management():
             except Exception as e:
                 print(e)
 
-    def sort_product(self, DB, categorie_id):
+    def export_origin_values(self, DB, id_prod):
+        '''
+            Function used to return the nutriscore and the
+            categorie id from the requested product
+        '''
         with DB.cursor() as cursor:
-            sql = f"""SELECT * FROM db_aliments WHERE categorie_id={categorie_id}
-                    ORDER BY nutriscore LIMIT 20;
-                    """
+            sql = f"""
+            SELECT nutriscore, categorie_id FROM
+            db_aliments WHERE id={id_prod};"""
             try:
                 cursor.execute(sql)
-                results = cursor.fetchall()
-                return results
+                initial_values = cursor.fetchall()
+                return initial_values
+                Sql_management.query_subsitute(self, DB, initial_values[0],
+                                               initial_values[1])
+            except Exception as e:
+                print(e)
+
+    def query_subsitute(self, db, nutriscore_initial, categorie):
+        with DB.cursor() as cursor:
+            id_better = f"""
+            SELECT * FROM db_aliments
+            WHERE nutriscore < '{nutriscore_initial}'
+            AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
+            """
+            try:
+                cursor.execute(id_better)
+                results_sub = cursor.fetchall()
+                return results_sub
             except Exception as e:
                 print(e)
 

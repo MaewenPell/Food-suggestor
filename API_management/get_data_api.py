@@ -2,9 +2,10 @@ import requests
 
 from db_management.db_interaction import Sql_management
 from settings_confs_files import settings as st
+from API_management.parsing import Parsing_params
 
 
-class Get_data_api():
+class Api_manager():
     '''
         Class use to fetch data from
         OpenFoodFact and retrieve informations
@@ -17,9 +18,6 @@ class Get_data_api():
         self.tags_other = ["compared_to_category"]
         self.tags_stores = ["stores"]
         self.tags_link = ["url"]
-
-    def get_tags(self):
-        ''' Tags for parsing the Open Food Fact BDD '''
 
     def manage_products(self, categorie):
         '''
@@ -45,35 +43,28 @@ class Get_data_api():
             i = 0
             for i in range(st.NB_RESULTS):
                 current_product = products[i]
-                name = self.get_informations(current_product,
-                                             self.tags_names)
-                nutriscore = self.get_informations(current_product,
-                                                   self.tags_nutriscore)
-                store = self.get_informations(current_product,
-                                              self.tags_stores)
-                link = self.get_informations(current_product,
-                                             self.tags_link)
+                name = self.get_informations_api(current_product,
+                                                 self.tags_names)
+                nutriscore = self.get_informations_api(current_product,
+                                                       self.tags_nutriscore)
+                store = self.get_informations_api(current_product,
+                                                  self.tags_stores)
+                link = self.get_informations_api(current_product,
+                                                 self.tags_link)
 
                 data_products = name, nutriscore, store, link
-                full_data = True
-                for elem in data_products:
-                    try:
-                        for letters in elem:
-                            if letters == "'":
-                                full_data = False
-                    except Exception:
-                        full_data = False
-                    if not elem or elem == '' or elem == 'not-applicable':
-                        full_data = False
 
-                if full_data:
+                correct_data = self.check_api_results(data_products)
+
+                if correct_data:
                     Sql_management.create_products(self, st.DB,
                                                    data_products, id_db)
 
-    def get_informations(self, current_product, tags):
+    def get_informations_api(self, current_product, tags):
         '''
-            Function used to retrieve data_retrieved from data and check
-            the integrity of the data
+            Function used to get data from API and firsly check
+            if the data are empty.
+            Secondly we'll trigger the second checker function
         '''
         empty_data = ['', 'None', 'not-apllicable', 'unknown']
         try:
@@ -97,3 +88,24 @@ class Get_data_api():
             pass
         except KeyError:
             pass
+
+    def check_api_results(self, results):
+        ''' Function used to parse the results and
+                check if they are correct before filling
+                the BDD
+            '''
+        correct_nutriscore = ['a', 'b', 'c', 'd', 'e']
+        empty_data = ['', 'None', 'not-apllicable', 'unknown']
+        name = results[0]
+        nutriscore = results[1]
+        store = results[2]
+        link = results[3]
+
+        for elem in name, nutriscore, store, link:
+            if ((not elem) or (elem in empty_data)):
+                return False
+
+            if (("'" in name) or (nutriscore not in correct_nutriscore)):
+                return False
+
+            return True

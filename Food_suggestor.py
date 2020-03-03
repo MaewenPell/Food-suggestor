@@ -28,10 +28,6 @@ class main_windows():
         depending of the user choice
         '''
 
-        # ---------------------
-        # Choice of a categorie
-        # ---------------------
-
         choice_menu = -1
 
         # While the user didn't enter a valid choice
@@ -41,31 +37,43 @@ class main_windows():
             except ValueError:
                 print("Erreur, merci de choisir une entrée valable")
 
-        # ---------------------------------
-        # Display Aliments for subsitution
-        # 1- Choice cat
-        #
-        # TODO :
-        # 2- Choice Alim √
-        # 3- Display substitue
-        # 4- Save result in BDD
-        # ---------------------------------
+        # ---------------------
+        # Choice of a categorie
+        # ---------------------
 
         if choice_menu == 1:
-            self.display_alim_for_subst()
+            id_old, id_subst = self.display_alim_for_subst()
+            save = 'e'
+            save = input("Save the results in the databse ? (Y/N) : ")
+            while save != 'Y' and save != 'N':
+                save = input("Please enter 'Y' or 'N' : ")
+                save = save.upper()
+            if save == 'Y':
+                res_q = Sql_management.save_results_subst(self,
+                                                          id_old,
+                                                          id_subst)
+                if not res_q:
+                    print('\n XX Error filling DB XX\n')
+                else:
+                    print("\n !! Succes filling DB !! \n")
 
         # --------------------------
         # Display substitue products
         # --------------------------
 
-        # TODO : A retravailler
+        if choice_menu == 2:
+            sql = Sql_management.export_table(self, DB, 'substitut')
+            sql = list(sql)
+            inital_product = [elem[0] for elem in sql]
+            # TODO : display les reusulats des substs
+            Sql_management.export_products_subst(sql)
+            
 
         # --------------
         # Reset the BDD
         # --------------
 
         elif choice_menu == 3:
-            # TODO : loop through each tables and categories
             # 1st : We delete and recreate the BDD
             Sql_management.reset_bdd(self, DB)
             # 2nd : We create the categories from config.py
@@ -102,20 +110,28 @@ class main_windows():
                                                          'db_aliments',
                                                          choice_category)
                 Displayer.display_products(self, results)
+                Displayer.display_sep()
 
                 # Secondly we choose a product to subsitute
                 prod = int(input(
                     "Choisir un produit à substituer : "))
+                Displayer.display_sep()
+                Displayer.display_subsitute_message()
                 # We retrieve the nutriscore and the cat of this product
-                initial_values = Sql_management.export_origin_values(self,
-                                                                     DB,
-                                                                     prod)
+                origin_prod = Sql_management.export_origin_values(self,
+                                                                  DB,
+                                                                  prod)
+                old_nutriscore = origin_prod[0][0]
+                cat = origin_prod[0][1]
                 # We query and retrieve the possible subsitutes
-                sub_id = Sql_management.query_subsitute(self, DB,
-                                                        initial_values[0][0],
-                                                        initial_values[0][1])
+                substitutes = Sql_management.query_subsitute(self, DB,
+                                                             old_nutriscore,
+                                                             cat)
+                substitutes = list(substitutes)
+                id_subst = [elem[0] for elem in substitutes]
                 # We display them
-                Displayer.display_products(self, sub_id)
+                Displayer.display_products(self, substitutes)
+                return prod, id_subst
             except ValueError:
                 print("Merci de choisir un nombre \
                        correspondant à une entrée")

@@ -21,6 +21,7 @@ class Displayer():
             \t 3- Réinitialiser la base de donnée
             \t 4- Quitter le programme
             \t ------------------------------------
+            \n
             """)
 
     def quit_message(self):
@@ -39,6 +40,12 @@ class Displayer():
             id_cat = elem[0]
             nom = elem[1]
             print(f"{id_cat} - {nom}")
+
+    def display_sep():
+        print('\n\n')
+
+    def display_subsitute_message():
+        print("Voila les produits substitués : \n")
 
     def display_products(self, results):
         '''

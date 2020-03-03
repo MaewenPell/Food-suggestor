@@ -121,3 +121,35 @@ class Sql_management():
                     except Exception as e:
                         print(f"{e} occured at {line}")
                         DB.rollback()
+
+    def save_results_subst(self, id_old, id_new):
+        '''
+            Function used to write in DB the
+            substitutions products
+        '''
+        for elem in sorted(id_new):
+            cursor = DB.cursor()
+            sql = f"""
+                    INSERT INTO substitut (id_initial_product,
+                    id_substitute_product)
+                    VALUES ('{id_old}' , '{elem}');
+                """
+            try:
+                cursor.execute(sql)
+                DB.commit()
+            except Exception as e:
+                print(f"Error inserting data: {e}")
+                print(f"{sql}")
+                DB.rollback()
+                return False
+
+    def export_products_subst(self, ids):
+        ''' Function used to display the substitue products '''
+        with DB.cursor() as cursor:
+            sql = f"""SELECT * FROM db_aliments WHERE id={ids};"""
+            try:
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+            except Exception as e:
+                print(e)

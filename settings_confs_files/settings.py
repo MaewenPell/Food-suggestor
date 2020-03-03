@@ -9,8 +9,8 @@ DB = pymysql.connect(cf.env.get("db", "host"),
                      cf.env.get("db", "schema"))
 
 # Number of results per requests
-NB_RESULTS = 100
-NB_DISPLAYED = 3
+NB_RESULTS = 200
+NB_DISPLAYED = 5
 
 # Path to the script creating the database
 PATH_DB_SCRIPT = """

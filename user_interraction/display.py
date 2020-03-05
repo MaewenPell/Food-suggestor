@@ -21,6 +21,7 @@ class Displayer():
             \t 3- Réinitialiser la base de donnée
             \t 4- Quitter le programme
             \t ------------------------------------
+            \n
             """)
 
     def quit_message(self):
@@ -40,19 +41,36 @@ class Displayer():
             nom = elem[1]
             print(f"{id_cat} - {nom}")
 
+    def display_sep():
+        print('\n\n')
+
+    def display_subsitute_message():
+        print("Voila les produits substitués : \n")
+
     def display_products(self, results):
         '''
             Display information from the different categories
             depending on the user choice
         '''
         for products in results:
+            id_prod = products[0]
             name = products[2]
             nutriscore = products[5]
             store = products[3]
             link = products[4]
-            print("-------------")
+            print("-----------------------------")
+            print(f"Choix n°{id_prod}")
             print(f"Nom du produit : {name}")
             print(f"Nutriscore : {nutriscore}")
             print(f"Magasin : {store}")
             print(f"Lien : {link}")
             print("-------------")
+
+
+    def display_substitute():
+        '''
+            Function used to display the substitue products
+            from a sql statement
+        '''
+
+        

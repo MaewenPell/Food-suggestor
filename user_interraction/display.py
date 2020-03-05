@@ -65,3 +65,12 @@ class Displayer():
             print(f"Magasin : {store}")
             print(f"Lien : {link}")
             print("-------------")
+
+
+    def display_substitute():
+        '''
+            Function used to display the substitue products
+            from a sql statement
+        '''
+
+        

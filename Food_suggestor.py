@@ -62,12 +62,29 @@ class main_windows():
         # --------------------------
 
         if choice_menu == 2:
+            i = 0
             sql = Sql_management.export_table(self, DB, 'substitut')
             sql = list(sql)
-            inital_product = [elem[0] for elem in sql]
-            # TODO : display les reusulats des substs
-            Sql_management.export_products_subst(sql)
-            
+            subsitute_products = [elem[2] for elem in sql]
+
+            inital_prod = list(dict.fromkeys([elem[1] for elem in sql]))
+
+            # Retrieve original products
+            for elem in inital_prod:
+                origin_data = Sql_management.export_products_subst(self,
+                                                                   inital_prod[i])
+                print("-------------- Original product : ------------------ ")
+                Displayer.display_products(self, origin_data)
+
+                print("------------- Substitutes ---------------------------")
+                for elem in subsitute_products:
+                    current_sub = Sql_management.export_products_subst(self,
+                                                                       elem)
+                    Displayer.display_products(self, current_sub)
+                i += 1
+                print("------------- Next product -------------")
+
+
 
         # --------------
         # Reset the BDD

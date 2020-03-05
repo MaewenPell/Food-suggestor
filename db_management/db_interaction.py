@@ -144,7 +144,9 @@ class Sql_management():
                 return False
 
     def export_products_subst(self, ids):
-        ''' Function used to display the substitue products '''
+        '''
+            Function used to export the substitutes products
+        '''
         with DB.cursor() as cursor:
             sql = f"""SELECT * FROM db_aliments WHERE id={ids};"""
             try:

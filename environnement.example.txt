@@ -7,6 +7,6 @@ It will be load by the program during the connection process.
 
 [db]
 host = ex: Localhost
-username = ex : User
+username = ex : root
 password = ex : Sup3r_Pa$$w0rD
-schema = The name of the Schema : main_db_food_suggestor
+schema = main_db_food_suggestor

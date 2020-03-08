@@ -71,7 +71,7 @@ class main_windows():
                     choice_category = int(input(
                         "Choisir une catégorie d'aliments : "))
                 except ValueError:
-                    "Please choose a correct value"
+                    print("Merci d'entrer une valeur existante")
                 # Querying the DB
                 prod_by_cat = self.sql_mgt.export_products('db_aliments',
                                                            choice_category)
@@ -144,12 +144,12 @@ class main_windows():
             Function used to save the result in the DB
         '''
         save = -1
-        save = input("Save the results in the databse ? (Y/N) : ")
+        save = input("Sauvegarder la subsitution ? (O/N) : ")
         save = save.upper()
-        while save != 'Y' and save != 'N':
-            save = input("Please enter 'Y' or 'N' : ")
+        while save != 'O' and save != 'N':
+            save = input("Merci d'entrer 'O' ou 'N' : ")
             save = save.upper()
-        if save == 'Y':
+        if save == 'O':
             self.sql_mgt.save_results_subst(id_old,
                                             data_subst)
 

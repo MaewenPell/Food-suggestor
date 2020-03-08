@@ -1,25 +1,27 @@
+from os import system
 from sys import exit
 
-from API_management.get_data_api import Api_manager
-from API_management.parsing import Parsing_params
+from api_management.get_data_api import Api_manager
+from api_management.parsing import Parsing_params
 from db_management.db_interaction import Sql_management
-from settings_confs_files.settings import DB
 from user_interraction.display import Displayer
 
 
 class main_windows():
     def __init__(self):
-        self.valid_choice = False
+        self.displayer = Displayer()
+        self.sql_mgt = Sql_management()
+        self.displayer.print_welcome()
         self.api_worker = Api_manager()
-        self.main_prog()
-        Displayer.print_welcome(self)
+        self.main()
 
-    def main_prog(self):
+    def main(self):
         '''
             Functon used to handle the general
             execution of the program
         '''
-        Displayer.print_menu(self)
+        self.valid_choice = False
+        self.displayer.print_menu()
         self.choice_parsing()
 
     def choice_parsing(self):
@@ -31,130 +33,134 @@ class main_windows():
         choice_menu = -1
 
         # While the user didn't enter a valid choice
-        while not self.user_choice_checker(choice_menu):
+        while not self.num_check(choice_menu):
             try:
                 choice_menu = int(input("Choisir une action : "))
             except ValueError:
                 print("Erreur, merci de choisir une entrée valable")
 
-        # ---------------------
-        # Choice of a categorie
-        # ---------------------
-
         if choice_menu == 1:
-            id_old, id_subst = self.display_alim_for_subst()
-            save = -1
-            save = input("Save the results in the databse ? (Y/N) : ")
-            save = save.upper()
-            while save != 'Y' and save != 'N':
-                save = input("Please enter 'Y' or 'N' : ")
-                save = save.upper()
-            if save == 'Y':
-                Sql_management.save_results_subst(self,
-                                                  id_old,
-                                                  id_subst)
-
-        # --------------------------
-        # Display substitue products
-        # --------------------------
+            self.display_prod_by_cat()
 
         if choice_menu == 2:
-            i = 0
-            sql = Sql_management.export_table(self, DB, 'substitut')
-            sql = list(sql)
-            subsitute_products = [elem[2] for elem in sql]
-
-            inital_prod = list(dict.fromkeys([elem[1] for elem in sql]))
-
-            # Retrieve original products
-            for elem in inital_prod:
-                origin_data = Sql_management.export_products_subst(self,
-                                                                   inital_prod[i])
-                print("-------------- Original product : ------------------ ")
-                Displayer.display_products(self, origin_data)
-
-                print("------------- Substitutes ---------------------------")
-                for elem in subsitute_products:
-                    current_sub = Sql_management.export_products_subst(self,
-                                                                       elem)
-                    Displayer.display_products(self, current_sub)
-                i += 1
-
-        # --------------
-        # Reset the BDD
-        # --------------
+            self.dislpay_substitutes()
 
         elif choice_menu == 3:
-            # 1st : We delete and recreate the BDD
-            Sql_management.reset_bdd(self, DB)
-            # 2nd : We create the categories from config.py
-            Parsing_params.cat_filling(self)
-            # 3rd we loop through the result and adding them into the BDD
-            categories_sql = Sql_management.export_table(self, DB, 'categorie')
-            self.api_worker.manage_products(categories_sql)
-
-        # --------------
-        # Leave the prog
-        # --------------
+            self.reset_db()
 
         elif choice_menu == 4:
             self.quit_prog()
 
-        self.main_prog()
+        self.main()
 
-    def display_alim_for_subst(self):
+    def display_prod_by_cat(self):
         '''
-            Function used to display the categories
-            and the aliments from the BDD
+            Function used to display the content of the different
+            cat so the user can choose a id_prod to subsitute
         '''
-        results = Sql_management.export_table(self, DB, 'categorie')
-        Displayer.display_categories(self, results)
+        # First display the differents categories
+        results = self.sql_mgt.export_table('categorie')
+        self.displayer.display_categories(results)
 
+        # We ask the user to choose a category
         choice_category = -1
-        while not self.user_choice_checker(choice_category):
+        while not self.num_check(choice_category):
             try:
-                # First we display the available categories
-                # and we display the associate product
-                choice_category = int(input(
-                        "Choisir une catégorie d'aliments : \n"))
-                results = Sql_management.export_products(self, DB,
-                                                         'db_aliments',
-                                                         choice_category)
-                Displayer.display_products(self, results)
-                Displayer.display_sep()
+                # We display the available categories and ask for a choice
+                try:
+                    choice_category = int(input(
+                        "Choisir une catégorie d'aliments : "))
+                except ValueError:
+                    "Please choose a correct value"
+                # Querying the DB
+                prod_by_cat = self.sql_mgt.export_products('db_aliments',
+                                                           choice_category)
+                # Display the products of this category
+                self.displayer.display_products(prod_by_cat)
+                # Trigger the function where the user choose the id_product to
+                # substiute
+                self.alim_to_sub(prod_by_cat)
+            except Exception as e:
+                print(f"Error retriving the data associated to this cat {e}")
+                return False
 
-                # Secondly we choose a product to subsitute
-                prod = int(input(
-                    "Choisir un produit à substituer : "))
-                Displayer.display_sep()
-                Displayer.display_subsitute_message()
-                # We retrieve the nutriscore and the cat of this product
-                origin_prod = Sql_management.export_origin_values(self,
-                                                                  DB,
-                                                                  prod)
-                old_nutriscore = origin_prod[0][0]
-                cat = origin_prod[0][1]
-                # We query and retrieve the possible subsitutes
-                substitutes = Sql_management.query_subsitute(self, DB,
-                                                             old_nutriscore,
-                                                             cat)
-                substitutes = list(substitutes)
-                id_subst = [elem[0] for elem in substitutes]
-                # We display them
-                Displayer.display_products(self, substitutes)
-                return prod, id_subst
-            except ValueError:
-                print("Merci de choisir un nombre \
-                       correspondant à une entrée")
+    def alim_to_sub(self, prod_by_cat):
+        '''
+            Function used to retrieve the wanted id_product to be substitue
+            and display the subsitute
+        '''
+        try:
+            # we retrieve the id_product to subsitute
+            # TODO : check if the id exist
+            id_prod = int(input(
+                "Choisir un id de produit à substituer : "))
+            system('cls||clear')
 
-    def user_choice_checker(self, choice_to_check):
+            self.displayer.display_subsitute_message()
+            # We get the nutriscore and the cat of this id_product
+            origin_values = self.sql_mgt.export_origin_values(id_prod)
+            old_nutriscore = origin_values[0][0]
+            cat = origin_values[0][1]
+            # We query and retrieve the possible subsitute
+            data_subst = self.sql_mgt.query_subsitute(old_nutriscore,
+                                                      cat)
+            # We display the information about the subsituate id_product
+            self.displayer.display_products(data_subst)
+            self.save_into_db(id_prod, data_subst[0][0])
+        except ValueError:
+            print("Merci de choisir un nombre correspondant à une entrée")
+
+    def dislpay_substitutes(self):
+        '''
+            Function used to display the initial product and the
+            saved subsitute
+        '''
+        results = self.sql_mgt.export_id_id_subst()
+        system('cls||clear')
+        for elem in results:
+            id_orig = elem[0]
+            id_susbst = elem[1]
+            print("\nProduit initialement choisi : \n")
+            orig_data = self.sql_mgt.export_products_subst(id_orig)
+            self.displayer.display_products(orig_data)
+            print("\n Produit substitué : \n")
+            subst_data = self.sql_mgt.export_products_subst(id_susbst)
+            self.displayer.display_products(subst_data)
+
+    def reset_db(self):
+        '''
+            Class used to reset the DB
+        '''
+        # 1st : We delete and recreate the BDD
+        self.sql_mgt.reset_bdd()
+        # 2nd : We create the categories from config.py
+        Parsing_params.cat_filling(self)
+        # 3rd we loop through the result and adding them into the BDD
+        categories_sql = self.sql_mgt.export_table('categorie')
+        self.api_worker.manage_products(categories_sql)
+
+    def save_into_db(self, id_old, data_subst):
+        '''
+            Function used to save the result in the DB
+        '''
+        save = -1
+        save = input("Save the results in the databse ? (Y/N) : ")
+        save = save.upper()
+        while save != 'Y' and save != 'N':
+            save = input("Please enter 'Y' or 'N' : ")
+            save = save.upper()
+        if save == 'Y':
+            self.sql_mgt.save_results_subst(id_old,
+                                            data_subst)
+
+    def num_check(self, choice_to_check):
         ''' Function used to check the input '''
         if choice_to_check > 4 or choice_to_check < 1:
             return False
         return True
 
     def quit_prog(self):
-        Displayer.quit_message(self)
+        self.displayer.quit_message()
         exit(0)
 
 

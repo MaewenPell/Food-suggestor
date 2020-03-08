@@ -14,13 +14,14 @@ class Displayer():
     def print_menu(self):
         print(
             """
-            \t ------------------------------------
-            \t Menu principal :
-            \t 1- Choisir une catégorie
-            \t 2- Afficher les produits substitués
-            \t 3- Réinitialiser la base de donnée
-            \t 4- Quitter le programme
-            \t ------------------------------------
+            \t******************************************
+            \t* Menu principal :                       *
+            \t*  1- Choisir une catégorie              *
+            \t*  2- Afficher les produits substitués   *
+            \t*  3- Réinitialiser la base de donnée    *
+            \t*  4- Quitter le programme               *
+            \t*                                        *
+            \t******************************************
             \n
             """)
 
@@ -41,11 +42,8 @@ class Displayer():
             nom = elem[1]
             print(f"{id_cat} - {nom}")
 
-    def display_sep():
-        print('\n\n')
-
-    def display_subsitute_message():
-        print("Voila les produits substitués : \n")
+    def display_subsitute_message(self):
+        print("Voici le produit proposé en subsitution \n")
 
     def display_products(self, results):
         '''
@@ -64,13 +62,4 @@ class Displayer():
             print(f"Nutriscore : {nutriscore}")
             print(f"Magasin : {store}")
             print(f"Lien : {link}")
-            print("-------------")
-
-
-    def display_substitute():
-        '''
-            Function used to display the substitue products
-            from a sql statement
-        '''
-
-        
+            print("----------------------------")

@@ -14,8 +14,6 @@ class Parsing_params():
         '''
         fetched_categories = st.CATEGORIES
         for cat in sorted(fetched_categories):
-            results = Sql_management.create_categories(self, st.DB, cat)
+            results = Sql_management.create_categories(self, cat)
             if not results:
                 print(f"Error creating {cat}")
-            else:
-                print(f"Succes to create {cat}")

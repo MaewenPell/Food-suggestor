@@ -2,7 +2,6 @@ import requests
 
 from db_management.db_interaction import Sql_management
 from settings_confs_files import settings as st
-from API_management.parsing import Parsing_params
 
 
 class Api_manager():
@@ -11,6 +10,8 @@ class Api_manager():
         OpenFoodFact and retrieve informations
     '''
     def __init__(self):
+        self.sql_mgmt = Sql_management()
+
         self.tags_nutriscore = ["nutrition_grades_tags", " nova_groups",
                                 "nutriscore_grade", "nutriscore_score",
                                 "nutrition_grade_fr", "nutrition_grades"]
@@ -39,28 +40,25 @@ class Api_manager():
             r = requests.get(req)
             r = r.json()
             products = r['products']
-
             i = 0
             for i in range(st.NB_RESULTS):
                 current_product = products[i]
-                name = self.get_informations_api(current_product,
-                                                 self.tags_names)
-                nutriscore = self.get_informations_api(current_product,
-                                                       self.tags_nutriscore)
-                store = self.get_informations_api(current_product,
-                                                  self.tags_stores)
-                link = self.get_informations_api(current_product,
-                                                 self.tags_link)
-
+                name = self.get_data_api(current_product,
+                                         self.tags_names)
+                nutriscore = self.get_data_api(current_product,
+                                               self.tags_nutriscore)
+                store = self.get_data_api(current_product,
+                                          self.tags_stores)
+                link = self.get_data_api(current_product,
+                                         self.tags_link)
                 data_products = name, nutriscore, store, link
-
                 correct_data = self.check_api_results(data_products)
-
                 if correct_data:
-                    Sql_management.create_products(self, st.DB,
-                                                   data_products, id_db)
+                    self.sql_mgmt.create_products(data_products,
+                                                  id_db)
+            print(f"Filling in progress ... {current_cat}")
 
-    def get_informations_api(self, current_product, tags):
+    def get_data_api(self, current_product, tags):
         '''
             Function used to get data from API and firsly check
             if the data are empty.

@@ -142,6 +142,7 @@ class Sql_management():
                 print(f"{sql}")
                 DB.rollback()
                 return False
+        return True
 
     def export_products_subst(self, ids):
         '''

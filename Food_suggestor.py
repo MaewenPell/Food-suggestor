@@ -43,19 +43,16 @@ class main_windows():
 
         if choice_menu == 1:
             id_old, id_subst = self.display_alim_for_subst()
-            save = 'e'
+            save = -1
             save = input("Save the results in the databse ? (Y/N) : ")
+            save = save.upper()
             while save != 'Y' and save != 'N':
                 save = input("Please enter 'Y' or 'N' : ")
                 save = save.upper()
             if save == 'Y':
-                res_q = Sql_management.save_results_subst(self,
-                                                          id_old,
-                                                          id_subst)
-                if not res_q:
-                    print('\n XX Error filling DB XX\n')
-                else:
-                    print("\n !! Succes filling DB !! \n")
+                Sql_management.save_results_subst(self,
+                                                  id_old,
+                                                  id_subst)
 
         # --------------------------
         # Display substitue products
@@ -82,9 +79,6 @@ class main_windows():
                                                                        elem)
                     Displayer.display_products(self, current_sub)
                 i += 1
-                print("------------- Next product -------------")
-
-
 
         # --------------
         # Reset the BDD

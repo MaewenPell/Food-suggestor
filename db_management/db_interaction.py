@@ -96,7 +96,7 @@ class Sql_management():
             id_better = f"""
             SELECT * FROM db_aliments
             WHERE nutriscore <= '{nutriscore_initial}'
-            AND categorie_id={categorie} LIMIT 1;
+            AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
             """
             try:
                 cursor.execute(id_better)

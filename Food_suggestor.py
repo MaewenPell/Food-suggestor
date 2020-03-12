@@ -64,38 +64,40 @@ class main_windows():
 
         # We ask the user to choose a category
         choice_category = -1
+
         while not self.num_check(choice_category):
             try:
-                # We display the available categories and ask for a choice
-                try:
-                    choice_category = int(input(
-                        "Choisir une catégorie d'aliments : "))
-                except ValueError:
-                    print("Merci d'entrer une valeur existante")
-                # Querying the DB
-                prod_by_cat = self.sql_mgt.export_products('db_aliments',
-                                                           choice_category)
-                # Display the products of this category
-                self.displayer.display_products(prod_by_cat)
-                # Trigger the function where the user choose the id_product to
-                # substiute
-                self.alim_to_sub(prod_by_cat)
-            except Exception as e:
-                print(f"Error retriving the data associated to this cat {e}")
-                return False
+                choice_category = int(input(
+                    "Choisir une catégorie d'aliments : "))
+            except ValueError:
+                print("Merci d'entrer une valeur existante")
 
-    def alim_to_sub(self, prod_by_cat):
+        # Querying the DB
+        prod_by_cat = self.sql_mgt.export_products('db_aliments',
+                                                   choice_category)
+        # Display the products of this category
+        possible_id_choice = [id[0] for id in prod_by_cat]
+        self.displayer.display_products(prod_by_cat)
+        # Trigger the function where the user choose the id_product to
+        # substiute
+        return_sub = False
+        while not return_sub:
+            return_sub = self.alim_to_sub(prod_by_cat, possible_id_choice)
+
+    def alim_to_sub(self, prod_by_cat, possible_id_choice):
         '''
             Function used to retrieve the wanted id_product to be substitue
             and display the subsitute
         '''
+        id_prod = int(input(
+            "Choisir un id de produit à substituer : "))
         try:
-            # we retrieve the id_product to subsitute
-            # TODO : check if the id exist
-            id_prod = int(input(
-                "Choisir un id de produit à substituer : "))
-            system('cls||clear')
+            while id_prod not in possible_id_choice:
+                # we retrieve the id_product to subsitute
+                id_prod = int(input(
+                    "Merci de choisir un id parmis ceux proposés : "))
 
+            system('cls||clear')
             self.displayer.display_subsitute_message()
             # We get the nutriscore and the cat of this id_product
             origin_values = self.sql_mgt.export_origin_values(id_prod)
@@ -106,9 +108,12 @@ class main_windows():
                                                       cat)
             # We display the information about the subsituate id_product
             self.displayer.display_products(data_subst)
-            self.save_into_db(id_prod, data_subst[0][0])
-        except ValueError:
+            possible_choice = [id[0] for id in data_subst]
+            self.save_into_db(id_prod, possible_choice)
+            return True
+        except Exception:
             print("Merci de choisir un nombre correspondant à une entrée")
+            return False
 
     def dislpay_substitutes(self):
         '''
@@ -116,16 +121,19 @@ class main_windows():
             saved subsitute
         '''
         results = self.sql_mgt.export_id_id_subst()
-        system('cls||clear')
-        for elem in results:
-            id_orig = elem[0]
-            id_susbst = elem[1]
-            print("\nProduit initialement choisi : \n")
-            orig_data = self.sql_mgt.export_products_subst(id_orig)
-            self.displayer.display_products(orig_data)
-            print("\n Produit substitué : \n")
-            subst_data = self.sql_mgt.export_products_subst(id_susbst)
-            self.displayer.display_products(subst_data)
+        if len(results) == 0:
+            print("Aucune substitution actuellement enregistré ...")
+        else:
+            system('cls||clear')
+            for elem in results:
+                id_orig = elem[0]
+                id_susbst = elem[1]
+                print("\nProduit initialement choisi : \n")
+                orig_data = self.sql_mgt.export_products_subst(id_orig)
+                self.displayer.display_products(orig_data)
+                print("\n Produit substitué : \n")
+                subst_data = self.sql_mgt.export_products_subst(id_susbst)
+                self.displayer.display_products(subst_data)
 
     def reset_db(self):
         '''
@@ -139,19 +147,19 @@ class main_windows():
         categories_sql = self.sql_mgt.export_table('categorie')
         self.api_worker.manage_products(categories_sql)
 
-    def save_into_db(self, id_old, data_subst):
+    def save_into_db(self, id_old, possible_choice):
         '''
             Function used to save the result in the DB
         '''
-        save = -1
-        save = input("Sauvegarder la subsitution ? (O/N) : ")
-        save = save.upper()
-        while save != 'O' and save != 'N':
-            save = input("Merci d'entrer 'O' ou 'N' : ")
-            save = save.upper()
-        if save == 'O':
-            self.sql_mgt.save_results_subst(id_old,
-                                            data_subst)
+        id_to_save = -1
+        while id_to_save not in possible_choice:
+            try:
+                id_to_save = int(input("Choisir une substitution : "))
+            except ValueError:
+                int(input("Merci de choisir un aliment dans la séléction :"))
+
+        self.sql_mgt.save_results_subst(id_old,
+                                        id_to_save)
 
     def num_check(self, choice_to_check):
         ''' Function used to check the input '''

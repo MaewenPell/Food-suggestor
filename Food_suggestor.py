@@ -2,8 +2,8 @@ import warnings
 from os import system
 from sys import exit, warnoptions
 
-from api_management.get_data_api import ApiManager
-from api_management.parsing import ParsingParams
+from management_api.get_data_api import ApiManager
+from management_api.parsing import ParsingParams
 from db_management.db_interaction import SqlManagement
 from user_interaction.display import Displayer
 

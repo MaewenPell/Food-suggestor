@@ -1,8 +1,8 @@
-from db_management.db_interaction import Sql_management
+from db_management.db_interaction import SqlManagement
 from settings_confs_files import settings as st
 
 
-class Parsing_params():
+class ParsingParams():
     '''
     Class used to parse parameters and trigger sql management
     '''
@@ -14,8 +14,6 @@ class Parsing_params():
         '''
         fetched_categories = st.CATEGORIES
         for cat in sorted(fetched_categories):
-            results = Sql_management.create_categories(self, st.DB, cat)
+            results = SqlManagement.create_categories(self, cat)
             if not results:
                 print(f"Error creating {cat}")
-            else:
-                print(f"Succes to create {cat}")

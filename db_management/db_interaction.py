@@ -1,10 +1,10 @@
-from settings_confs_files.settings import NB_DISPLAYED, DB
+from settings_confs_files.settings import NB_DISPLAYED, DB, PATH_DB_SCRIPT
 
 
-class Sql_management():
+class SqlManagement():
     ''' Class use to retrieve and write data into the DB '''
 
-    def create_products(self, DB, values, cat_id):
+    def create_products(self, values, cat_id):
         '''
         Categorie use to fill the product table Schema is:
         db_aliments : categorie_id, alim_name, store, website_link, nutriscore
@@ -29,7 +29,7 @@ class Sql_management():
             print(f"{sql}")
             DB.rollback()
 
-    def create_categories(self, DB, categorie_to_fill):
+    def create_categories(self, categorie_to_fill):
         '''
             Function used to create the categorie into the DB depends
             of the categories we fill into settings
@@ -46,9 +46,8 @@ class Sql_management():
         except Exception as e:
             print(f"Error inserting data : {e}")
             DB.rollback()
-        # self.db.close()
 
-    def export_table(self, DB, table):
+    def export_table(self, table):
         '''
             Function used to export sql results
             of the content of the DB
@@ -60,9 +59,9 @@ class Sql_management():
                 results = cursor.fetchall()
                 return results
             except Exception as e:
-                print(e)
+                print(f"Error export table: {e}")
 
-    def export_products(self, DB, table, categorie_id):
+    def export_products(self, table, categorie_id):
         ''' Function used to display the products '''
         with DB.cursor() as cursor:
             sql = f"""SELECT * FROM {table} WHERE categorie_id={categorie_id}
@@ -72,9 +71,9 @@ class Sql_management():
                 results = cursor.fetchall()
                 return results
             except Exception as e:
-                print(e)
+                print(f"Error export products: {e}")
 
-    def export_origin_values(self, DB, id_prod):
+    def export_origin_values(self, id_prod):
         '''
             Function used to return the nutriscore and the
             categorie id from the requested product
@@ -87,16 +86,16 @@ class Sql_management():
                 cursor.execute(sql)
                 initial_values = cursor.fetchall()
                 return initial_values
-                Sql_management.query_subsitute(self, DB, initial_values[0],
-                                               initial_values[1])
+                SqlManagement.query_subsitute(self, DB, initial_values[0],
+                                              initial_values[1])
             except Exception as e:
-                print(e)
+                print(f"Error export origin values: {e}")
 
-    def query_subsitute(self, db, nutriscore_initial, categorie):
+    def query_subsitute(self, nutriscore_initial, categorie):
         with DB.cursor() as cursor:
             id_better = f"""
             SELECT * FROM db_aliments
-            WHERE nutriscore < '{nutriscore_initial}'
+            WHERE nutriscore <= '{nutriscore_initial}'
             AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
             """
             try:
@@ -104,44 +103,45 @@ class Sql_management():
                 results_sub = cursor.fetchall()
                 return results_sub
             except Exception as e:
-                print(e)
+                print(f"Error query subst: {e}")
 
-    def reset_bdd(self, DB):
+    def reset_bdd(self):
         ''' Function used to delete all tables '''
+        print("(Ré)initialisation en cours ...")
         with DB.cursor() as cursor:
             sql = ''
-            with open('db_management/db_creation_script.sql', 'r') as sql_file:
+            with open(PATH_DB_SCRIPT, 'r') as sql_file:
                 for line in sql_file:
                     sql += line
                 sql = sql.split(";")
                 for line in sql:
                     try:
-                        cursor.execute(line)
-                        DB.commit()
+                        if line != "":
+                            cursor.execute(line)
+                            DB.commit()
                     except Exception as e:
-                        print(f"{e} occured at {line}")
+                        print(f"Error reading the sql script {e}")
                         DB.rollback()
 
-    def save_results_subst(self, id_old, id_new):
+    def save_results_subst(self, id_old, id_subst):
         '''
             Function used to write in DB the
             substitutions products
         '''
-        for elem in sorted(id_new):
-            cursor = DB.cursor()
-            sql = f"""
-                    INSERT INTO substitut (id_initial_product,
-                    id_substitute_product)
-                    VALUES ('{id_old}' , '{elem}');
-                """
-            try:
-                cursor.execute(sql)
-                DB.commit()
-            except Exception as e:
-                print(f"Error inserting data: {e}")
-                print(f"{sql}")
-                DB.rollback()
-                return False
+        cursor = DB.cursor()
+        sql = f"""
+                INSERT IGNORE INTO substitut (id_initial_product,
+                id_substitute_product)
+                VALUES ('{id_old}' , '{id_subst}');
+            """
+        try:
+            cursor.execute(sql)
+            DB.commit()
+        except Exception as e:
+            print(f"Error inserting data: {e}")
+            print(f"{sql}")
+            DB.rollback()
+            return False
         return True
 
     def export_products_subst(self, ids):
@@ -155,4 +155,19 @@ class Sql_management():
                 results = cursor.fetchall()
                 return results
             except Exception as e:
-                print(e)
+                print(f"Error export product subst: {e}")
+
+    def export_id_id_subst(self):
+        '''
+        Function used to export the id of the original product
+        and the id of the choosen subst
+        '''
+        with DB.cursor() as cursor:
+            sql = f"""SELECT id_initial_product, id_substitute_product
+                      FROM substitut;"""
+            try:
+                cursor.execute(sql)
+                results = cursor.fetchall()
+                return results
+            except Exception as e:
+                print(f"Error export id idsubst values: {e}")

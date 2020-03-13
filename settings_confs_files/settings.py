@@ -2,34 +2,24 @@ import pymysql
 
 from settings_confs_files import configuration as cf
 
-''' Database parameters '''
+# Database parameters that we load from the environnement.txt
 DB = pymysql.connect(cf.env.get("db", "host"),
                      cf.env.get("db", "username"),
                      cf.env.get("db", "password"),
                      cf.env.get("db", "schema"))
 
-# Number of results per requests
+# Number of results that we load from the OFF open DB
+# for EACH category
 NB_RESULTS = 200
+
+# Number of products that we display on the screen
+# (substitutes and product in categories)
 NB_DISPLAYED = 5
 
-# Path to the script creating the database
-PATH_DB_SCRIPT = """
-/Users/maewen/OpenClassrooms/Projet_5/Food-suggestor/database_management/db_creation_script.sql
-"""
+# Path of the script to create the database
+PATH_DB_SCRIPT = "db_management/db_creation_script.sql"
 
-'''
-    Creating the categories for the products
-'''
+# Categories that we'll load from the OFF DB
 CATEGORIES = ["Boissons", "Biscuits",
               "Charcuteries", "Surgelés",
               "Snacks"]
-
-''' Tags for parsins the Open Food Fact BDD '''
-
-TAGS_NUTRISCORE = ["nutrition_grades_tags", " nova_groups",
-                   "nutriscore_grade", "nutriscore_score",
-                   "nutrition_grade_fr", "nutrition_grades"]
-TAGS_NAMES = ["product_name", "generic_name"]
-TAGS_OTHER = ["compared_to_category"]
-TAGS_STORES = ["stores"]
-TAGS_LINK = ["url"]

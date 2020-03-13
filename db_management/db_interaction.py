@@ -1,7 +1,7 @@
-from settings_confs_files.settings import NB_DISPLAYED, DB
+from settings_confs_files.settings import NB_DISPLAYED, DB, PATH_DB_SCRIPT
 
 
-class Sql_management():
+class SqlManagement():
     ''' Class use to retrieve and write data into the DB '''
 
     def create_products(self, values, cat_id):
@@ -86,8 +86,8 @@ class Sql_management():
                 cursor.execute(sql)
                 initial_values = cursor.fetchall()
                 return initial_values
-                Sql_management.query_subsitute(self, DB, initial_values[0],
-                                               initial_values[1])
+                SqlManagement.query_subsitute(self, DB, initial_values[0],
+                                              initial_values[1])
             except Exception as e:
                 print(f"Error export origin values: {e}")
 
@@ -107,10 +107,10 @@ class Sql_management():
 
     def reset_bdd(self):
         ''' Function used to delete all tables '''
-        print("Réinitialisation en cours ...")
+        print("(Ré)initialisation en cours ...")
         with DB.cursor() as cursor:
             sql = ''
-            with open('db_management/db_creation_script.sql', 'r') as sql_file:
+            with open(PATH_DB_SCRIPT, 'r') as sql_file:
                 for line in sql_file:
                     sql += line
                 sql = sql.split(";")
@@ -130,7 +130,7 @@ class Sql_management():
         '''
         cursor = DB.cursor()
         sql = f"""
-                INSERT INTO substitut (id_initial_product,
+                INSERT IGNORE INTO substitut (id_initial_product,
                 id_substitute_product)
                 VALUES ('{id_old}' , '{id_subst}');
             """

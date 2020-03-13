@@ -6,9 +6,9 @@ class Displayer():
 
     def print_welcome(self):
         print("""
-         ---------------------------
-        | Welcome to Food Suggestor |
-         ---------------------------
+        *---------------------------------*
+        | Bienvenue dans Food Suggestor ! |
+        *---------------------------------*
         """)
 
     def print_menu(self):
@@ -16,9 +16,10 @@ class Displayer():
             """
             \t******************************************
             \t* Menu principal :                       *
+            \t*                                        *
             \t*  1- Choisir une catégorie              *
             \t*  2- Afficher les produits substitués   *
-            \t*  3- Réinitialiser la base de donnée    *
+            \t*  3- (Ré)initialiser la base de donnée  *
             \t*  4- Quitter le programme               *
             \t*                                        *
             \t******************************************
@@ -41,6 +42,9 @@ class Displayer():
             id_cat = elem[0]
             nom = elem[1]
             print(f"{id_cat} - {nom}")
+
+    def display_welcome_subst(self):
+        print(""" \nVoila la liste des produits substitués : \n""")
 
     def display_subsitute_message(self):
         print("Voici le produit proposé en subsitution \n")

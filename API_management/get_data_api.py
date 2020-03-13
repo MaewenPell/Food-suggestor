@@ -1,16 +1,16 @@
 import requests
 
-from db_management.db_interaction import Sql_management
+from db_management.db_interaction import SqlManagement
 from settings_confs_files import settings as st
 
 
-class Api_manager():
+class ApiManager():
     '''
         Class use to fetch data from
         OpenFoodFact and retrieve informations
     '''
     def __init__(self):
-        self.sql_mgmt = Sql_management()
+        self.sql_mgmt = SqlManagement()
 
         self.tags_nutriscore = ["nutrition_grades_tags", " nova_groups",
                                 "nutriscore_grade", "nutriscore_score",
@@ -56,7 +56,7 @@ class Api_manager():
                 if correct_data:
                     self.sql_mgmt.create_products(data_products,
                                                   id_db)
-            print(f"Filling in progress ... {current_cat}")
+            print(f"Ajout des produits : {current_cat}")
 
     def get_data_api(self, current_product, tags):
         '''
@@ -93,7 +93,7 @@ class Api_manager():
                 the BDD
             '''
         correct_nutriscore = ['a', 'b', 'c', 'd', 'e']
-        empty_data = ['', 'None', 'not-apllicable', 'unknown']
+        empty_data = ['', 'None', 'not-apllicable', 'unknown', 'none']
         name = results[0]
         nutriscore = results[1]
         store = results[2]

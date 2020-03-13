@@ -1,18 +1,20 @@
+import warnings
 from os import system
-from sys import exit
+from sys import exit, warnoptions
 
-from api_management.get_data_api import Api_manager
-from api_management.parsing import Parsing_params
-from db_management.db_interaction import Sql_management
+from api_management.get_data_api import ApiManager
+from api_management.parsing import ParsingParams
+from db_management.db_interaction import SqlManagement
 from user_interraction.display import Displayer
 
 
-class main_windows():
+class MainWindows():
     def __init__(self):
+        # Mute the deprecation warning about the cursor() method
         self.displayer = Displayer()
-        self.sql_mgt = Sql_management()
+        self.sql_mgt = SqlManagement()
         self.displayer.print_welcome()
-        self.api_worker = Api_manager()
+        self.api_worker = ApiManager()
         self.main()
 
     def main(self):
@@ -122,9 +124,10 @@ class main_windows():
         '''
         results = self.sql_mgt.export_id_id_subst()
         if len(results) == 0:
-            print("Aucune substitution actuellement enregistré ...")
+            print("Aucune substitution actuellement enregistrée ...")
         else:
             system('cls||clear')
+            self.displayer.display_welcome_subst()
             for elem in results:
                 id_orig = elem[0]
                 id_susbst = elem[1]
@@ -142,7 +145,7 @@ class main_windows():
         # 1st : We delete and recreate the BDD
         self.sql_mgt.reset_bdd()
         # 2nd : We create the categories from config.py
-        Parsing_params.cat_filling(self)
+        ParsingParams.cat_filling(self)
         # 3rd we loop through the result and adding them into the BDD
         categories_sql = self.sql_mgt.export_table('categorie')
         self.api_worker.manage_products(categories_sql)
@@ -156,14 +159,14 @@ class main_windows():
             try:
                 id_to_save = int(input("Choisir une substitution : "))
             except ValueError:
-                int(input("Merci de choisir un aliment dans la séléction :"))
+                int(input("Merci de choisir un aliment dans la sélection :"))
 
         self.sql_mgt.save_results_subst(id_old,
                                         id_to_save)
 
     def num_check(self, choice_to_check):
         ''' Function used to check the input '''
-        if choice_to_check > 4 or choice_to_check < 1:
+        if choice_to_check > 5 or choice_to_check < 1:
             return False
         return True
 
@@ -173,4 +176,6 @@ class main_windows():
 
 
 if __name__ == "__main__":
-    main_windows = main_windows()
+    if not warnoptions:
+        warnings.simplefilter("ignore")
+    main_windows = MainWindows()

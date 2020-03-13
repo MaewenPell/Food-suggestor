@@ -32,7 +32,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `main_db_food_suggestor`.`substitut` (
   `ID` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `id_initial_product` INT(10) UNSIGNED NOT NULL,
+  `id_initial_product` INT(10) UNSIGNED NOT NULL UNIQUE,
   `id_substitute_product` INT(10) UNSIGNED NOT NULL,
   PRIMARY KEY (`ID`),
   INDEX `fk_substitut_db_aliments1_idx` (`id_initial_product` ASC) VISIBLE,

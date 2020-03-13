@@ -70,7 +70,7 @@ class MainWindows():
         while not self.num_check(choice_category):
             try:
                 choice_category = int(input(
-                    "Choisir une catégorie d'aliments : "))
+                    "Séléctionner la catégorie : "))
             except ValueError:
                 print("Merci d'entrer une valeur existante")
 
@@ -92,7 +92,7 @@ class MainWindows():
             and display the subsitute
         '''
         id_prod = int(input(
-            "Choisir un id de produit à substituer : "))
+            "Séléctionner l'aliment (son numéro) : "))
         try:
             while id_prod not in possible_id_choice:
                 # we retrieve the id_product to subsitute

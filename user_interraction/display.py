@@ -14,15 +14,15 @@ class Displayer():
     def print_menu(self):
         print(
             """
-            \t******************************************
-            \t* Menu principal :                       *
-            \t*                                        *
-            \t*  1- Choisir une catégorie              *
-            \t*  2- Afficher les produits substitués   *
-            \t*  3- (Ré)initialiser la base de donnée  *
-            \t*  4- Quitter le programme               *
-            \t*                                        *
-            \t******************************************
+            \t**********************************************************
+            \t* Menu principal :                                       *
+            \t*                                                        *
+            \t*  1- Quel aliment souhaitez-vous remplacer ?            *
+            \t*  2- Retrouver mes aliments substitués.                 *
+            \t*  3- (Ré)initialiser la base de donnée                  *
+            \t*  4- Quitter le programme                               *
+            \t*                                                        *
+            \t**********************************************************
             \n
             """)
 

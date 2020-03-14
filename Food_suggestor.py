@@ -155,14 +155,22 @@ class MainWindows():
             Function used to save the result in the DB
         '''
         id_to_save = -1
+        reply = "N"
         while id_to_save not in possible_choice:
             try:
                 id_to_save = int(input("Choisir une substitution : "))
             except ValueError:
                 int(input("Merci de choisir un aliment dans la sélection :"))
 
-        self.sql_mgt.save_results_subst(id_old,
-                                        id_to_save)
+        reply = input("Souhaitez vous enregistrer cette substitution (O/N) : ")
+        reply = reply.upper()
+        while(reply != 'O' and reply != 'N'):
+            reply = input(
+                "Souhaitez vous enregistrer cette substitution (O/N) :")
+            reply = reply.upper()
+        if reply == 'O':
+            self.sql_mgt.save_results_subst(id_old,
+                                            id_to_save)
 
     def num_check(self, choice_to_check):
         ''' Function used to check the input '''

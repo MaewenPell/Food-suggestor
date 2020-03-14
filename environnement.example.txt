@@ -1,9 +1,10 @@
-This file will be used to connect the Food Suggestor program 
-to an existing database you need to renseign these informations
-to get the program working.
-It will be load by the program during the connection process.
+>>>> This file will be used to connect the Food Suggestor program 
+>>>> to an existing database you need to renseign these informations
+>>>> to get the program working.
+>>>> It will be load by the program during the connection process.
 
->>>> This file must be saved as environnement.txt <<<
+>>>> /!\ Save only the lines beggining with [db] not the comments (>>>>)
+>>>> This file must be saved as environnement.txt into settings_confs_files/environnement.txt <<<
 
 [db]
 host = ex: Localhost

@@ -1,6 +1,8 @@
 # Food Suggestor
 
-Ce programme permettant de substituer des aliments par d'autres meilleurs pour la santé.
+### Introduction
+
+Ce programme permet de substituer des aliments par d'autres meilleurs pour la santé.
 Il se base sur les données publique de la base de donnée [OpenFoodFact](https://fr.openfoodfacts.org/decouvrir).
 
 Les aliments sont repertoriés et triés par catégorie, il vous sera alors possible de choisir
@@ -10,6 +12,51 @@ choix dans la base de donnée pour pouvoir le retrouver plus tard.
 
 Les bienfais alimentaires des aliments sont basés sur leur nutriscrore. "A" étant la meilleure note et "E" la moins bonne.
 
+----------------------- 
+
+### Documentation-Driven Development
+
+#### Strategie générale adoptée pour le développement, séparation des fonctionnalités en différents "Blocs" de développement. 
+
+1. Créer une base de donnnée pour contenir les aliments et les substitutions
+    ```
+        db_management/
+    ```
+    - 3 tables differentes :
+        - 1. Table contenant les différentes catégories chargées depuis notre programme
+        - 2. Table contenant tout les aliments ordonés par catégorie
+        - 3. Table contenant les subsitutions
+    
+2. Recupérer les informations sur les produits et les enregistrer dans notre BDD
+    ```
+        management_api/
+    ```
+    - Charger les différentes catégories
+    - Requêter l'API d'OpenFoodFact (catégorie, nombre de produits souhaités)
+    - Vérifier les données récupérées pour avoir des données complètes.
+    - Les enregistrer en BDD
+
+3. Créer une interaction avec l'utilisateur pour pouvoir répondre à ses attentes
+    ```
+        user_interaction/
+        food_suggestor
+    ```
+    - Récupérer les catégories / Récupérer le choix / Afficher les produits associés
+
+4. Proposer des substitutions
+    ```
+        db_interaction/
+    ```
+    - Explorer notre base de donnée et afficher les produits de la même catégorie qui ont un meilleur nutriscore que celui du produit actuel.
+
+5. Enregistrer les résultats si voulu
+    ```
+        food_suggestor
+        db_interaction/
+    ```
+    - Proposer aux utilisateur de sauvegarder la substitution
+
+-------------------------- 
 ### Pré-requis
 
 Ce programme est écrit en Python et le systeme de base de donnée utilisé est SQL et MySql.
@@ -30,18 +77,18 @@ pip install -r requirements.txt
 
 ## Installations
 
-Une fois les dépendances et les programmes installés connectez vous à MySql :
-
-````
-mysql -u root -p
-```
+Une fois les dépendances et les programmes installés connectez vous à MySql et exectuez le fichier .sql
 
 ```
 source [path script mysql db_management/db_creation_script.sql]
-````
+```
 
 Votre schéma de donnée est désormais crée.
-Vous devez ensuite renseigner les informations spécifiés dans le dossier "environnement.example.txt" et enregistrer celui ci comme "environnement.txt"
+Vous devez ensuite renseigner les informations spécifiés dans le dossier "environnement.example.txt" et enregistrer celui ci comme "environnement.txt" **à l'emplacement suivant** :
+
+```
+settings_confs_files/environnement.txt
+```
 
 
 Pour le premier lancement de l'application vous aller devoir remlir la base de donnée avec
@@ -49,18 +96,20 @@ des données de l'API.
 
 Pour cela :
 
-0. Lancez le programme :
+1. Lancez le programme :
 ```
-    python -W ignore -m food-suggestor
+    python food-suggestor
 ```
-0. Séléctionnez l'option n°3, cela aura pour effect de remplir la base de donnée
-0. Vous êtes désormais prêt et vous pouvez utiliser l'application (cf utilisation)
+2. Séléctionnez l'option n°3, cela aura pour effect de remplir la base de donnée
+3. Vous êtes désormais prêt et vous pouvez utiliser l'application
 
-## Lancement :
+---------
 
-0. Lancez le programme :
+## Lancement
+
+1. Lancez le programme :
 ```
-    python -W ignore -m food-suggestor
+    python food-suggestor
 ```
 
 - 4 choix vous sont proposés:
@@ -70,16 +119,18 @@ Pour cela :
 
     - 2- Afficher les produits subsitués que vous avez auparavant sauvegardés
 
-    - 3- Reinitialiser la base de donnée (supprimer vos enregistrement et recharger
-         des données d'aliments depuis OpenFoodFact)
+    - 3- (Ré)initialiser la base de donnée (supprimer vos enregistrement et recharger
+     des données d'aliments depuis OpenFoodFact)
     
     - 4- Quitter le programme
+
+-------------------
 
 ## Paramètres
 
 Plusieurs paramètres sont configurables :
 
-0. Choix des catégories :
+1. Choix des catégories :
     - Trouvez les catégories que vous voulez depuis [OpenFoodFact](https://fr.openfoodfacts.org/categories)
     - Changer les dans le fichier setting_confs_files/settings.py dans la variable "CATEGORIE"
     - Relancer le programme et reinitialiser la base de données pour que les nouvelles catégories soient effectivent.
@@ -89,5 +140,3 @@ Plusieurs paramètres sont configurables :
 
 2. NB_DISPLAY:
     Le nombre de résultat qui vous seront proposés lors du choix d'une catégorie.
-
-

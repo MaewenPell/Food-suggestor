@@ -1,6 +1,6 @@
 # Food Suggestor
 
-### Introduction
+## Introduction
 
 Ce programme permet de substituer des aliments par d'autres meilleurs pour la santé.
 Il se base sur les données publique de la base de donnée [OpenFoodFact](https://fr.openfoodfacts.org/decouvrir).
@@ -18,7 +18,7 @@ Les bienfais alimentaires des aliments sont basés sur leur nutriscrore. "A" ét
 
 #### Strategie générale adoptée pour le développement, séparation des fonctionnalités en différents "Blocs" de développement. 
 
-1. Créer une base de donnnée pour contenir les aliments et les substitutions
+1. Création une base de donnnée pour contenir les aliments et les substitutions : 
     ```
         db_management/
     ```
@@ -27,7 +27,7 @@ Les bienfais alimentaires des aliments sont basés sur leur nutriscrore. "A" ét
         - 2. Table contenant tout les aliments ordonés par catégorie
         - 3. Table contenant les subsitutions
     
-2. Recupérer les informations sur les produits et les enregistrer dans notre BDD
+2. Recupération des informations sur les produits et les enregistrer dans notre BDD
     ```
         management_api/
     ```
@@ -36,28 +36,28 @@ Les bienfais alimentaires des aliments sont basés sur leur nutriscrore. "A" ét
     - Vérifier les données récupérées pour avoir des données complètes.
     - Les enregistrer en BDD
 
-3. Créer une interaction avec l'utilisateur pour pouvoir répondre à ses attentes
+3. Création d'une interaction avec l'utilisateur pour pouvoir répondre à ses attentes
     ```
         user_interaction/
         food_suggestor
     ```
     - Récupérer les catégories / Récupérer le choix / Afficher les produits associés
 
-4. Proposer des substitutions
+4. Proposition de substitutions
     ```
         db_interaction/
     ```
     - Explorer notre base de donnée et afficher les produits de la même catégorie qui ont un meilleur nutriscore que celui du produit actuel.
 
-5. Enregistrer les résultats si voulu
+5. Proposer d'enregistrer les résultats si voulu
     ```
         food_suggestor
         db_interaction/
     ```
-    - Proposer aux utilisateur de sauvegarder la substitution
 
 -------------------------- 
-### Pré-requis
+--------------------------
+## Pré-requis
 
 Ce programme est écrit en Python et le systeme de base de donnée utilisé est SQL et MySql.
 Vous aurez besoin pour lancer ce programme :

@@ -24,9 +24,7 @@ class SqlManagement():
             cursor.execute(sql)
             DB.commit()
             return True
-        except Exception as e:
-            print(f"Error inserting data: {e}")
-            print(f"{sql}")
+        except Exception:
             DB.rollback()
 
     def create_categories(self, categorie_to_fill):
@@ -43,8 +41,7 @@ class SqlManagement():
             cursor.execute(sql)
             DB.commit()
             return True
-        except Exception as e:
-            print(f"Error inserting data : {e}")
+        except Exception:
             DB.rollback()
 
     def export_table(self, table):
@@ -93,11 +90,18 @@ class SqlManagement():
 
     def query_subsitute(self, nutriscore_initial, categorie):
         with DB.cursor() as cursor:
-            id_better = f"""
-            SELECT * FROM db_aliments
-            WHERE nutriscore <= '{nutriscore_initial}'
-            AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
-            """
+            if nutriscore_initial == 'a':
+                id_better = f"""
+                SELECT * FROM db_aliments
+                WHERE nutriscore <= '{nutriscore_initial}'
+                AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
+                """
+            else:
+                id_better = f"""
+                SELECT * FROM db_aliments
+                WHERE nutriscore < '{nutriscore_initial}'
+                AND categorie_id={categorie} LIMIT {NB_DISPLAYED};
+                """
             try:
                 cursor.execute(id_better)
                 results_sub = cursor.fetchall()
@@ -137,9 +141,7 @@ class SqlManagement():
         try:
             cursor.execute(sql)
             DB.commit()
-        except Exception as e:
-            print(f"Error inserting data: {e}")
-            print(f"{sql}")
+        except Exception:
             DB.rollback()
             return False
         return True

@@ -21,5 +21,5 @@ PATH_DB_SCRIPT = "db_management/db_creation_script.sql"
 
 # Categories that we'll load from the OFF DB
 CATEGORIES = ["Boissons", "Biscuits",
-              "Charcuteries", "Surgelés",
+              "Confiseries", "Surgelés",
               "Snacks"]

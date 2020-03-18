@@ -10,6 +10,7 @@ DB = pymysql.connect(cf.env.get("db", "host"),
 
 # Number of results that we load from the OFF open DB
 # for EACH category
+# range tested [50-200]
 NB_RESULTS = 200
 
 # Number of products that we display on the screen
